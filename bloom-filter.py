@@ -66,15 +66,16 @@ N = len(search_sequence) # numero de elementos a buscar
 print(N)
 
 print("Begin Tests")
-start = time.time()
-count = 0
-for name, status in search_sequence:
-    baby_csv.seek(0)
-    for row in baby_names:
-        if name == row[0]:
-            count += 1
-end = time.time()
-print(f"Test no filter: Time taken = {end-start} sec")
+for i in range(1,11):
+    start = time.time()
+    count = 0
+    for name, status in search_sequence:
+        baby_csv.seek(0)
+        for row in baby_names:
+            if name == row[0]:
+                count += 1
+    end = time.time()
+    print(f"Test no filter: Time taken = {end-start} sec")
 
 TOLERANCE = 0.01 # tolerancia de error
 n = baby_len # numero de elementos en la db
