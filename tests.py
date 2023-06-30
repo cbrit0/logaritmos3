@@ -1,46 +1,15 @@
-import mmh3
 import csv
-import random
 import time
-from bitarray import bitarray
-
-class BloomFilter:
-    """
-    Esta clase representa un filtro de Bloom
-    Attributes:
-        m: int
-            largo del arreglo de bits
-        k: int
-            numero de funciones de hash
-        M: bitarray
-            el arreglo de bits
-    """
-    def __init__(self, m, k):
-        self.m = m
-        self.k = k
-        self.M = bitarray(m)
-        self.M.setall(0)
-    
-    def add(self, x):
-        for i in range(self.k):
-            j = mmh3.hash(key=x, seed=i) % self.m # distintas seed generan distintos hash
-            self.M[j] = 1
-    
-    def __contains__(self, y):
-        for i in range(self.k):
-            j = mmh3.hash(key=y, seed=i) % self.m
-            if self.M[j] == 0:
-                return False
-        return True
-
+import random
+from bloomfilter import BloomFilter
 
 baby_csv = open('Popular-Baby-Names-Final.csv', "r", encoding='utf-8')
 baby_len = 93890 # numero de elementos en la db
 film_csv = open('Film-Names.csv', "r", encoding='utf-8')
 film_len = 3809
 
-TP = 300 # verdaderos positivos
-TN = 150 # verdaderos negativos
+TP = 1500 # true positives
+TN = 500 # true negatives
 
 # Primero generamos la secuencia de busqueda
 search_sequence = []
@@ -111,5 +80,3 @@ for m in range(n, 10*n+1, n):
         end = time.time()
         error = FP/TN
         print(f"Test filter k = {k}: Time taken = {end-start}, error = {error}")
-
-
