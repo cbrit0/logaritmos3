@@ -7,9 +7,8 @@ baby_csv = open('Popular-Baby-Names-Final.csv', "r", encoding='utf-8')
 baby_len = 93890 # numero de elementos en la db
 film_csv = open('Film-Names.csv', "r", encoding='utf-8')
 film_len = 3809
-
-TP = 1500 # true positives
-TN = 500 # true negatives
+TP = 1000 # verdaderos positivos
+TN = 500 # verdaderos negativos
 
 # Primero generamos la secuencia de busqueda
 search_sequence = []
@@ -35,7 +34,7 @@ N = len(search_sequence) # numero de elementos a buscar
 print(N)
 
 print("Begin Tests")
-for i in range(1,11):
+for i in range(1,6):
     start = time.time()
     count = 0
     for name, status in search_sequence:
@@ -61,22 +60,24 @@ for m in range(n, 10*n+1, n):
             name = row[0]
             bloom_filter.add(name)
         
-        # Busqueda
-        FP = 0 # falsos positivos
+        for i in range(1,6):
 
-        start = time.time()
-        for name, status in search_sequence:
-            if name in bloom_filter: # si el filtro dice que esta, lo buscamos en el archivo
-                found = False
-                baby_csv.seek(0)
-                for row in baby_names:
-                    if name == row[0]:
-                        found = True
-                if not found: # si no lo encontramos despues de recorrer la db, es un falso positivo
-                    FP += 1
-            
-            else: # si el filtro dice que no esta, verificamos el one-side error
-                assert status == False
-        end = time.time()
-        error = FP/TN
-        print(f"Test filter k = {k}: Time taken = {end-start}, error = {error}")
+            # Busqueda
+            FP = 0 # falsos positivos
+
+            start = time.time()
+            for name, status in search_sequence:
+                if name in bloom_filter: # si el filtro dice que esta, lo buscamos en el archivo
+                    found = False
+                    baby_csv.seek(0)
+                    for row in baby_names:
+                        if name == row[0]:
+                            found = True
+                    if not found: # si no lo encontramos despues de recorrer la db, es un falso positivo
+                        FP += 1
+                
+                else: # si el filtro dice que no esta, verificamos el one-side error
+                    assert status == False
+            end = time.time()
+            error = FP/TN
+            print(f"k = {k}; i = {i}; time taken = {end-start}; error = {error}")
